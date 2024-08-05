@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QRCode Maker</title>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: black;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+  }
+  h1 {
+    text-align: center;
+    color: black;
+  }
+  .input-group {
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  select, input[type="text"], textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-sizing: border-box;
+  }
+  button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #2980b9;
+  }
+  #qrcode {
+    text-align: center;
+    margin-top: 20px;
+  }
+  #qrcode img {
+    max-width: 100%;
+    height: auto;
+  }
+  #download {
+    text-align: center;
+    margin-top: 20px;
+  }
+  #download a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #2ecc71;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+  }
+  #download a:hover {
+    background-color: #27ae60;
+  }
+  #navbar {
+    position: fixed;
+    bottom: 0;
+    left: 20px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    width: calc(100% - 40px);
+  }
+  #navbar img {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    margin: 0 20px;
+  }
+  #navbar img:hover {
+    transform: scale(1.2);
+  }
+  #alert {
+    display: none;
+    text-align: center;
+    color: red;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+  <h1>QRCode Maker</h1>
+  
+  <div class="input-group">
+    <label for="qr-content">Contenuto:</label>
+    <textarea id="qr-content" rows="4" placeholder="Inserisci il contenuto per il QR code"></textarea>
+  </div>
+  
+  <button onclick="generateQR()">Genera QR Code</button>
+  
+  <div id="qrcode"></div>
+  
+  <div id="download" style="display:none;">
+    <a href="#" download="qrcode.png">Scarica QR Code</a>
+  </div>
+
+  <div id="navbar">
+    <img src="qrtext.png" alt="Testo" onclick="setQRType('text')">
+    <img src="qrlink.png" alt="Link" onclick="setQRType('url')">
+    <img src="qrimg.png" alt="Immagine" onclick="setQRType('image')">
+  </div>
+
+  <div id="alert">Per favore, inserisci il contenuto per il QR code.</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+  <script>
+    let qrType = 'text'; 
+
+    function setQRType(type) {
+      qrType = type;
+      const contentArea = document.getElementById('qr-content');
+      switch(type) {
+        case 'text':
+          contentArea.placeholder = 'Inserisci il testo';
+          break;
+        case 'url':
+          contentArea.placeholder = 'Inserisci l'URL (es. www.example.com)';
+          break;
+        case 'image':
+          contentArea.placeholder = 'Inserisci il link dell'immagine';
+          break;
+      }
+    }
+
+    function generateQR() {
+      const content = document.getElementById('qr-content').value;
+      
+      if (!content) {
+        document.getElementById('alert').style.display = 'block';
+        return;
+      } else {
+        document.getElementById('alert').style.display = 'none';
+      }
+
+      let qrContent = content;
+      if (qrType === 'url' && !content.startsWith('http://') && !content.startsWith('https://')) {
+        qrContent = 'https://' + content;
+      }
+
+      const qr = qrcode(0, 'M');
+      qr.addData(qrContent);
+      qr.make();
+
+      const qrcodeDiv = document.getElementById('qrcode');
+      qrcodeDiv.innerHTML = qr.createImgTag(5, 10);
+
+      const downloadLink = document.getElementById('download');
+      downloadLink.style.display = 'block';
+      
+      const canvas = document.createElement('canvas');
+      const img = qrcodeDiv.querySelector('img');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      
+      const dataURL = canvas.toDataURL('image/png');
+      downloadLink.querySelector('a').href = dataURL;
+    }
+  </script>
+</body>
+<style>
+*:focus {
+  outline: none;
+}
+
+button:focus, 
+input:focus, 
+textarea:focus {
+  outline: none;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+</style>
+</html>

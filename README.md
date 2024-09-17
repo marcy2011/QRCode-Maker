@@ -6,5 +6,5 @@ View source and preview on https://renadeveloper.altervista.org/qrcode-maker-mod
 Download the QRCode Maker WebApp on https://renastore.altervista.org/qrcode-maker.html
 
 <a href="https://renastore.altervista.org/qrcode-maker.html">
-    <img src="https://renaarcade.altervista.org/downrenas.png" alt="Download On The Rena Store" width="200">
+    <img src="https://renadeveloper.altervista.org/downloadrs.png" alt="Download On The Rena Store" width="200">
 </a>
